@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as CaptureRouteImport } from './routes/capture'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CaptureRoute = CaptureRouteImport.update({
   id: '/capture',
   path: '/capture',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/capture': typeof CaptureRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/capture': typeof CaptureRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/capture': typeof CaptureRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/capture'
+  fullPaths: '/' | '/capture' | '/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/capture'
-  id: '__root__' | '/' | '/capture'
+  to: '/' | '/capture' | '/verify'
+  id: '__root__' | '/' | '/capture' | '/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CaptureRoute: typeof CaptureRoute
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/capture': {
       id: '/capture'
       path: '/capture'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CaptureRoute: CaptureRoute,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
